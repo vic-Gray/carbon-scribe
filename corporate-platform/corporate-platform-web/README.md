@@ -42,3 +42,5 @@ A modern Next.js web application for corporate buyers to purchase, manage, and r
     ├── types/               # TypeScript definitions
     └── utils/               # Helper functions
 ```
+
+---
