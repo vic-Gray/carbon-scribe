@@ -1,65 +1,82 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import DashboardOverview from '@/components/dashboard/DashboardOverview'
+import CreditMarketplace from '@/components/marketplace/CreditMarketplace'
+import RetirementHistory from '@/components/retirement/RetirementHistory'
+import PortfolioAnalytics from '@/components/analytics/PortfolioAnalytics'
+import SustainabilityGoals from '@/components/goals/SustainabilityGoals'
+import QuickActions from '@/components/actions/QuickActions'
+import LiveRetirementFeed from '@/components/feed/LiveRetirementFeed'
+
+export default function CorporatePlatformHome() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="space-y-6 animate-in">
+      {/* Header Section */}
+      <div className="bg-linear-to-r from-corporate-navy via-corporate-blue to-corporate-teal rounded-2xl p-6 md:p-8 text-white shadow-2xl">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between">
+          <div className="mb-6 lg:mb-0">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 tracking-tight">
+              Carbon Credit Portfolio Dashboard
+            </h1>
+            <p className="text-blue-100 opacity-90 max-w-2xl">
+              Manage your carbon offset strategy with real-time data, transparent verification, and instant retirement capabilities.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 min-w-50">
+              <div className="text-sm text-blue-200 mb-1">Total Retired</div>
+              <div className="text-2xl font-bold">45,000 tCO₂</div>
+              <div className="text-xs text-green-300">+12.5% this quarter</div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 min-w-50">
+              <div className="text-sm text-blue-200 mb-1">Available Balance</div>
+              <div className="text-2xl font-bold">25,000 tCO₂</div>
+              <div className="text-xs text-blue-300">Ready for retirement</div>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </div>
+
+      {/* Main Dashboard Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column */}
+        <div className="lg:col-span-2 space-y-6">
+          <DashboardOverview />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <SustainabilityGoals />
+            <PortfolioAnalytics />
+          </div>
+          <RetirementHistory />
         </div>
-      </main>
+
+        {/* Right Column */}
+        <div className="space-y-6">
+          <QuickActions />
+          <CreditMarketplace />
+          <LiveRetirementFeed />
+        </div>
+      </div>
+
+      {/* Bottom Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: 'Net Zero Progress', value: '68%', icon: '🎯', description: '2030 Target', color: 'bg-linear-to-r from-blue-500 to-cyan-500' },
+          { label: 'Scope 3 Coverage', value: '42%', icon: '📊', description: 'Supply Chain', color: 'bg-linear-to-r from-teal-500 to-emerald-500' },
+          { label: 'SDG Alignment', value: '9/17', icon: '🌍', description: 'Goals Achieved', color: 'bg-linear-to-r from-purple-500 to-pink-500' },
+          { label: 'Cost Efficiency', value: '$18.33', icon: '💰', description: 'Avg per ton', color: 'bg-linear-to-r from-orange-500 to-red-500' },
+        ].map((stat) => (
+          <div key={stat.label} className="corporate-card p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div className={`${stat.color} w-10 h-10 rounded-lg flex items-center justify-center`}>
+                <span className="text-white text-lg">{stat.icon}</span>
+              </div>
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{stat.description}</span>
+            </div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">{stat.label}</div>
+          </div>
+        ))}
+      </div>
     </div>
-  );
+  )
 }
