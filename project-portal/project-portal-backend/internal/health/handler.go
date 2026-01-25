@@ -21,11 +21,18 @@ func NewHandler(service Service) *Handler {
 func RegisterRoutes(r *gin.Engine, h *Handler) {
 	v1 := r.Group("/api/v1/health")
 	{
+		// Metrics
 		v1.POST("/metrics", h.CreateSystemMetric)
 		v1.GET("/metrics", h.GetSystemMetrics)
+
+		// Status
 		v1.GET("/status", h.GetSystemStatus)
 		v1.GET("/status/detailed", h.GetDetailedStatus)
+
+		// Services
 		v1.GET("/services", h.GetServicesHealth)
+
+		// Checks
 		v1.POST("/checks", h.CreateServiceHealthCheck)
 	}
 }

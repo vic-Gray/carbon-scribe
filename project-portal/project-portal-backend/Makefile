@@ -1,5 +1,6 @@
 .PHONY: build run test clean lint fmt deps docker-build docker-run lambda-build db-up db-down db-logs db-shell test-integration
 
+# Load environment variables from .env file
 -include .env
 export
 
@@ -62,7 +63,7 @@ lambda-zip: lambda-build
 	cd $(LAMBDA_DIR) && zip function.zip $(LAMBDA_BINARY)
 
 # Run
-run:
+run: db-up
 	go run cmd/api/main.go
 
 dev:
@@ -73,7 +74,7 @@ db-up:
 	docker-compose up -d db
 
 db-down:
-	docker-compose down -v
+	docker-compose down
 
 db-logs:
 	docker-compose logs -f db
