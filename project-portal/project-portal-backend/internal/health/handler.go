@@ -41,6 +41,9 @@ func RegisterRoutes(r *gin.Engine, h *Handler) {
 
 		// Reports
 		v1.GET("/reports/daily", h.GetDailyReport)
+
+		// Dependencies
+		v1.GET("/dependencies", h.GetDependencies)
 	}
 }
 
@@ -270,4 +273,23 @@ func (h *Handler) GetDailyReport(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, report)
+}
+
+// ========== Dependencies ==========
+
+// GetDependencies returns the list of service dependencies
+// @Summary Get service dependencies
+// @Description Get the list of all registered service dependencies and their health status
+// @Tags health
+// @Produce json
+// @Success 200 {array} ServiceDependency
+// @Router /api/v1/health/dependencies [get]
+func (h *Handler) GetDependencies(c *gin.Context) {
+	dependencies, err := h.service.GetDependencies(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, dependencies)
 }

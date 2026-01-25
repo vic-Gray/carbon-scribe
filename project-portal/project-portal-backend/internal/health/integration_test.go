@@ -40,7 +40,7 @@ func setupTestRouter(t *testing.T) (*gin.Engine, *gorm.DB) {
 	health.RegisterRoutes(router, handler)
 
 	// Clean up database tables for isolation
-	db.Exec("TRUNCATE TABLE system_metrics, service_health_checks, health_check_results, system_alerts, system_status_snapshots RESTART IDENTITY CASCADE")
+	db.Exec("TRUNCATE TABLE system_metrics, service_health_checks, health_check_results, system_alerts, system_status_snapshots, service_dependencies RESTART IDENTITY CASCADE")
 
 	return router, db
 }
@@ -275,4 +275,30 @@ func TestDailyReportResource(t *testing.T) {
 	assert.Equal(t, "daily", report.SnapshotType)
 	assert.Equal(t, "healthy", report.OverallStatus)
 	assert.Equal(t, 5, report.ServicesTotal)
+}
+
+func TestDependenciesResource(t *testing.T) {
+	router, db := setupTestRouter(t)
+
+	// Seed a test dependency
+	testDep := health.ServiceDependency{
+		SourceService:  "carbon-scribe-api",
+		TargetService:  "stellar-horizon",
+		DependencyType: "hard",
+		FailureImpact:  "high",
+		IsMonitored:    true,
+	}
+	db.Create(&testDep)
+
+	// GET /dependencies
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/api/v1/health/dependencies", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	var deps []health.ServiceDependency
+	json.Unmarshal(w.Body.Bytes(), &deps)
+	assert.NotEmpty(t, deps)
+	assert.Equal(t, "carbon-scribe-api", deps[0].SourceService)
+	assert.Equal(t, "stellar-horizon", deps[0].TargetService)
 }

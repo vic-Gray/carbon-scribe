@@ -29,6 +29,9 @@ type Service interface {
 
 	// Reports
 	GetDailyReport(ctx context.Context) (*SystemStatusSnapshot, error)
+
+	// Dependencies
+	GetDependencies(ctx context.Context) ([]ServiceDependency, error)
 }
 
 const defaultServiceName = "carbon-scribe-project-portal"
@@ -238,4 +241,10 @@ func (s *service) AcknowledgeAlert(ctx context.Context, id string, userID string
 
 func (s *service) GetDailyReport(ctx context.Context) (*SystemStatusSnapshot, error) {
 	return s.repo.GetLatestSnapshot(ctx, "daily")
+}
+
+// ========== Dependencies ==========
+
+func (s *service) GetDependencies(ctx context.Context) ([]ServiceDependency, error) {
+	return s.repo.ListServiceDependencies(ctx)
 }

@@ -28,6 +28,9 @@ type Repository interface {
 
 	// Reports
 	GetLatestSnapshot(ctx context.Context, snapshotType string) (*SystemStatusSnapshot, error)
+
+	// Dependencies
+	ListServiceDependencies(ctx context.Context) ([]ServiceDependency, error)
 }
 
 // repository implements the Repository interface
@@ -151,4 +154,12 @@ func (r *repository) GetLatestSnapshot(ctx context.Context, snapshotType string)
 		return nil, err
 	}
 	return &snapshot, nil
+}
+
+// ========== Dependencies ==========
+
+func (r *repository) ListServiceDependencies(ctx context.Context) ([]ServiceDependency, error) {
+	var dependencies []ServiceDependency
+	err := r.db.WithContext(ctx).Find(&dependencies).Error
+	return dependencies, err
 }
