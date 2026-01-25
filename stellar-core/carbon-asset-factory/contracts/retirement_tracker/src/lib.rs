@@ -1,7 +1,7 @@
 #![no_std]
 use soroban_sdk::{
-    contract, contracterror, contractimpl, contracttype, Address, Bytes, BytesN, Env, IntoVal,
-    String, Symbol, Vec,
+    contract, contracterror, contractevent, contractimpl, contracttype, Address, Bytes, BytesN,
+    Env, IntoVal, String, Symbol, Vec,
 };
 
 // ========================================================================
@@ -48,7 +48,7 @@ pub enum ContractError {
 // Events
 // ========================================================================
 
-#[contracttype]
+#[contractevent]
 pub struct RetirementEvent {
     pub token_id: u32,
     pub retiring_entity: Address,
@@ -56,8 +56,8 @@ pub struct RetirementEvent {
     pub tx_hash: BytesN<32>,
 }
 
-#[contracttype]
-pub struct CarbonAssetContractUpdatedEvent {
+#[contractevent]
+pub struct ContractUpdatedEvent {
     pub old_contract: Address,
     pub new_contract: Address,
     pub updated_by: Address,
@@ -182,20 +182,13 @@ impl RetirementTracker {
             .set(&entity_key, &entity_retirements);
 
         // Emit event
-        let event_topic = (
-            Symbol::new(&env, "retirement"),
-            Symbol::new(&env, "retired"),
-        );
-        env.events().publish(
-            event_topic,
-            RetirementEvent {
-                token_id,
-                retiring_entity: retiring_entity.clone(),
-                timestamp,
-                tx_hash,
-            },
-        );
-
+        RetirementEvent {
+            token_id,
+            retiring_entity: retiring_entity.clone(),
+            timestamp,
+            tx_hash,
+        }
+        .publish(&env);
         Ok(record)
     }
 
@@ -318,19 +311,12 @@ impl RetirementTracker {
             .set(&DataKey::CarbonAssetContract, &new_contract);
 
         // Emit event
-        let event_topic = (
-            Symbol::new(&env, "admin"),
-            Symbol::new(&env, "contract_updated"),
-        );
-        env.events().publish(
-            event_topic,
-            CarbonAssetContractUpdatedEvent {
-                old_contract,
-                new_contract,
-                updated_by: caller,
-            },
-        );
-
+        ContractUpdatedEvent {
+            old_contract,
+            new_contract,
+            updated_by: caller,
+        }
+        .publish(&env);
         Ok(())
     }
 
